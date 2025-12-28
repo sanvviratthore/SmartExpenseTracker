@@ -1,0 +1,9 @@
+# Ignore data files (user info, expenses)
+data/
+
+# Ignore IntelliJ config
+.idea/
+
+# Ignore IntelliJ module file
+*.iml
+out/
