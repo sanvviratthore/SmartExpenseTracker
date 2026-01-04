@@ -6,16 +6,22 @@ import java.util.List;
 public class ExpenseStorage {
     private  static final String FILE_PATH = "data/expenses.txt";
 
-    public static void saveExpenses(List<Expense> expenses){
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))){
-            for(Expense e : expenses){
+    public static void saveExpenses(List<Expense> expenses) {
+        try {
+            File file = new File(FILE_PATH);
+            file.getParentFile().mkdirs();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            for (Expense e : expenses) {
                 writer.write(e.toFileString());
                 writer.newLine();
             }
-        } catch (IOException e){
-            System.out.println("Error saving expenses.");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 
     public static List<Expense> loadExpenses(){
         List<Expense> expenses = new ArrayList<>();

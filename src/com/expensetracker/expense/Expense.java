@@ -16,32 +16,25 @@ public class Expense {
 
     //how objects become text
     public String toFileString(){
-        return title+ "," + "amt" + "," + category + "," + date;
+        return title+ "," + amt + "," + category + "," + date;
     }
 
     //how text becomes objects
     public static Expense fromFileString(String line) {
+        try {
+            String[] parts = line.split(",");
 
-        // Skip empty or invalid lines
-        if (line == null || line.trim().isEmpty()) {
+            String title = parts[0];
+            double amt = Double.parseDouble(parts[1]);
+            String category = parts[2];
+            LocalDate date = LocalDate.parse(parts[3]);
+
+            return new Expense(title, amt, category, date);
+        } catch (Exception e) {
+            System.out.println("Skipping corrupted line: " + line);
             return null;
         }
-
-        String[] parts = line.split(",");
-
-        // Skip header or malformed lines
-        if (parts.length < 4 || parts[1].equalsIgnoreCase("amt")) {
-            return null;
-        }
-
-        return new Expense(
-                parts[0],
-                Double.parseDouble(parts[1]),
-                parts[2],
-                LocalDate.parse(parts[3])
-        );
     }
-
 
     @Override
     public String toString(){
