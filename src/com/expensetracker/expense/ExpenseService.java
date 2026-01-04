@@ -31,8 +31,12 @@ public class ExpenseService {
         }
 
         System.out.println("\n---- Your Expenses ----");
-        for (Expense e : expenses){
+        for (Expense e : expenses) {
             System.out.println(e);
         }
+    }
+
+    public List<Expense> getExpenses() {
+        return expenses;
     }
 }

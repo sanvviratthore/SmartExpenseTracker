@@ -26,7 +26,10 @@ public class ExpenseStorage {
         try(BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))){
             String line;
             while ((line=reader.readLine()) !=null){
-                expenses.add(Expense.fromFileString(line));
+                Expense e = Expense.fromFileString(line);
+                if (e != null) {
+                    expenses.add(e);
+                }
             }
         } catch (IOException e){
             System.out.println("Error loading expenses.");

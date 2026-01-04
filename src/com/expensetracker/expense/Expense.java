@@ -20,8 +20,20 @@ public class Expense {
     }
 
     //how text becomes objects
-    public static Expense fromFileString(String line){ //factory method
-        String[] parts=line.split(",");
+    public static Expense fromFileString(String line) {
+
+        // Skip empty or invalid lines
+        if (line == null || line.trim().isEmpty()) {
+            return null;
+        }
+
+        String[] parts = line.split(",");
+
+        // Skip header or malformed lines
+        if (parts.length < 4 || parts[1].equalsIgnoreCase("amt")) {
+            return null;
+        }
+
         return new Expense(
                 parts[0],
                 Double.parseDouble(parts[1]),
@@ -30,8 +42,18 @@ public class Expense {
         );
     }
 
+
     @Override
     public String toString(){
         return date + " | " + title + " | ₹" + amt + " | " + category;
     }
+
+    public double getAmt() {
+        return amt;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
 }

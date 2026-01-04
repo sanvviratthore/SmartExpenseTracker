@@ -1,6 +1,9 @@
 package com.expensetracker;
+
 import com.expensetracker.auth.AuthService;
 import com.expensetracker.expense.ExpenseService;
+import com.expensetracker.insights.InsightsService;
+
 import java.util.Scanner;
 
 public class Main {
@@ -20,7 +23,7 @@ public class Main {
         System.out.print("Password: ");
         String pass = sc.nextLine();
 
-        boolean isAuthenticated = false;
+        boolean isAuthenticated;
 
         if (choice == 1) {
             isAuthenticated = auth.register(username, pass);
@@ -34,7 +37,6 @@ public class Main {
                     : "Invalid credentials");
         }
 
-        // 🚨 Stop app if auth failed
         if (!isAuthenticated) {
             System.out.println("Exiting application...");
             return;
@@ -43,16 +45,27 @@ public class Main {
         ExpenseService expenseService = new ExpenseService();
 
         while (true) {
-            System.out.println("\n1. Add Expense");
+            System.out.println("\n====== Smart Expense Tracker ======");
+            System.out.println("1. Add Expense");
             System.out.println("2. View Expenses");
-            System.out.println("3. Exit");
+            System.out.println("3. Total Spending");
+            System.out.println("4. Highest Spending Category");
+            System.out.println("5. Smart Insight");
+            System.out.println("6. Exit");
 
             int choiceE = Integer.parseInt(sc.nextLine());
+
+            InsightsService insights = new InsightsService(expenseService.getExpenses());
 
             switch (choiceE) {
                 case 1 -> expenseService.addExpense(sc);
                 case 2 -> expenseService.viewExpenses();
-                case 3 -> {
+                case 3 -> System.out.println(
+                        "Total Spending: ₹" + insights.getTotalSpending()
+                );
+                case 4 -> insights.highestSpendingCategory();
+                case 5 -> insights.smartInsight();
+                case 6 -> {
                     System.out.println("Goodbye 👋");
                     System.exit(0);
                 }
@@ -61,3 +74,5 @@ public class Main {
         }
     }
 }
+
+
