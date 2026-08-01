@@ -1,5 +1,6 @@
 package com.expensetracker.auth;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import com.expensetracker.auth.dto.AuthRequest;
 import com.expensetracker.auth.dto.AuthResponse;
 import com.expensetracker.security.JwtService;
@@ -26,13 +27,17 @@ public class AuthService {
     }
 
     public AuthResponse register(AuthRequest request) {
-        if (userRepository.existsByUsername(request.username())) {
-            throw new IllegalArgumentException("User already exists");
-        }
-        User user = new User(request.username(), passwordEncoder.encode(request.password()));
-        userRepository.save(user);
-        return new AuthResponse(jwtService.generateToken(user.getUsername()), user.getUsername());
+    if (userRepository.existsByUsername(request.username())) {
+        throw new IllegalArgumentException("User already exists");
     }
+    User user = new User(request.username(), passwordEncoder.encode(request.password()));
+    try {
+        userRepository.save(user);
+    } catch (DataIntegrityViolationException e) {
+        throw new IllegalArgumentException("User already exists");
+    }
+    return new AuthResponse(jwtService.generateToken(user.getUsername()), user.getUsername());
+}
 
     public AuthResponse login(AuthRequest request) {
         User user = userRepository.findByUsername(request.username())

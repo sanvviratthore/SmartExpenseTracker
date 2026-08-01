@@ -31,9 +31,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        log.error("Unhandled exception", ex);
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong. Please try again.");
     }
 
     private ResponseEntity<Map<String, Object>> build(HttpStatus status, String message) {
