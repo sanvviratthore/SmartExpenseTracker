@@ -22,8 +22,8 @@ public class Expense {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private double amount;
+    @Column(nullable = false, precision = 19, scale = 2)
+    private java.math.BigDecimal amount;
 
     @Column(nullable = false)
     private String category;
@@ -35,7 +35,7 @@ public class Expense {
         // required by JPA
     }
 
-    public Expense(String username, String title, double amount, String category, LocalDate date) {
+    public Expense(String username, String title, java.math.BigDecimal amount, String category, LocalDate date) {
         this.username = username;
         this.title = title;
         this.amount = amount;
@@ -55,7 +55,7 @@ public class Expense {
         return title;
     }
 
-    public double getAmount() {
+    public java.math.BigDecimal getAmount() {
         return amount;
     }
 

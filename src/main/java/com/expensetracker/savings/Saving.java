@@ -1,7 +1,7 @@
 package com.expensetracker.savings;
 
 import jakarta.persistence.*;
-
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
@@ -18,8 +18,8 @@ public class Saving {
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false)
-    private double amount;
+    @Column(nullable = false, precision = 19, scale = 2)
+    private BigDecimal amount;
 
     @Column(nullable = false)
     private LocalDate date;
@@ -28,7 +28,7 @@ public class Saving {
         // required by JPA
     }
 
-    public Saving(String username, double amount, LocalDate date) {
+    public Saving(String username, BigDecimal amount, LocalDate date) {
         this.username = username;
         this.amount = amount;
         this.date = date;
@@ -42,7 +42,7 @@ public class Saving {
         return username;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 

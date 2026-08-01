@@ -1,9 +1,11 @@
 package com.expensetracker.savings.dto;
 
+import java.math.BigDecimal;
+
 public record BuyingInsightResponse(
         String productName,
-        double targetAmount,
+        BigDecimal targetAmount,
         String productLink,
-        double savedPercent,
+        BigDecimal savedPercent,
         boolean canBuy
 ) {}

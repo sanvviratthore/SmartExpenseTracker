@@ -3,15 +3,11 @@ package com.expensetracker.savings;
 import com.expensetracker.savings.dto.*;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Savings and wishlist logic. Mirrors the original SavingService:
- *  - set wishlist goals and record daily savings
- *  - "buying insight" caps progress at 100% and flags a purchase once savings
- *    reach 80% of a goal's price.
- */
 @Service
 public class SavingService {
 
@@ -39,33 +35,44 @@ public class SavingService {
 
     public SavingsSummaryResponse getSavings(String username) {
         List<Saving> savings = savingRepository.findByUsernameOrderByDateDesc(username);
-        double total = savings.stream().mapToDouble(Saving::getAmount).sum();
+        BigDecimal total = savings.stream()
+                .map(Saving::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         return new SavingsSummaryResponse(
                 total,
                 savings.stream().map(SavingResponse::from).toList());
     }
 
-    public double getTotalSaved(String username) {
+    public BigDecimal getTotalSaved(String username) {
         return savingRepository.findByUsernameOrderByDateDesc(username)
-                .stream().mapToDouble(Saving::getAmount).sum();
+                .stream()
+                .map(Saving::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<BuyingInsightResponse> getBuyingInsights(String username) {
-        double totalSaved = getTotalSaved(username);
+        BigDecimal totalSaved = getTotalSaved(username);
         return goalRepository.findByUsername(username).stream()
                 .map(goal -> {
-                    double percent = goal.getTargetAmount() > 0
-                            ? (totalSaved / goal.getTargetAmount()) * 100
-                            : 0;
-                    if (percent >= 100) {
-                        percent = 100; // cap at 100%
+                    BigDecimal target = goal.getTargetAmount();
+                    BigDecimal percent = target.compareTo(BigDecimal.ZERO) > 0
+                            ? totalSaved
+                                .divide(target, 4, RoundingMode.HALF_UP)
+                                .multiply(BigDecimal.valueOf(100))
+                            : BigDecimal.ZERO;
+
+                    if (percent.compareTo(BigDecimal.valueOf(100)) > 0) {
+                        percent = BigDecimal.valueOf(100); // cap at 100%
                     }
-                    boolean canBuy = percent >= 80;
+                    percent = percent.setScale(2, RoundingMode.HALF_UP);
+
+                    boolean canBuy = percent.compareTo(BigDecimal.valueOf(80)) >= 0;
+
                     return new BuyingInsightResponse(
                             goal.getProductName(),
-                            goal.getTargetAmount(),
+                            target,
                             goal.getProductLink(),
-                            Math.round(percent * 100.0) / 100.0,
+                            percent,
                             canBuy);
                 })
                 .toList();

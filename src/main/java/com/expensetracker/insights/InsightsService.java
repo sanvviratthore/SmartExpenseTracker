@@ -5,6 +5,7 @@ import com.expensetracker.expense.ExpenseService;
 import com.expensetracker.insights.dto.InsightsResponse;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,10 @@ public class InsightsService {
         double total = 0;
         Map<String, Double> categoryMap = new HashMap<>();
         for (Expense e : expenses) {
-            total += e.getAmount();
-            categoryMap.merge(e.getCategory(), e.getAmount(), Double::sum);
+            BigDecimal amount = e.getAmount();
+            double value = amount.doubleValue();
+            total += value;
+            categoryMap.merge(e.getCategory(), value, Double::sum);
         }
 
         String highestCategory = "";

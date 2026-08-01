@@ -7,10 +7,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Expense CRUD. Mirrors the old ExpenseService/ExpenseStorage pair, but persists
- * through the repository instead of reading/writing text files.
- */
 @Service
 public class ExpenseService {
 
@@ -37,7 +33,6 @@ public class ExpenseService {
                 .toList();
     }
 
-    /** Raw entities, used by the insights service. */
     public List<Expense> getRawExpenses(String username) {
         return expenseRepository.findByUsernameOrderByDateDesc(username);
     }

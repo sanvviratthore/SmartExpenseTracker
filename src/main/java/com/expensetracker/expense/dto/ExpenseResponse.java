@@ -3,11 +3,12 @@ package com.expensetracker.expense.dto;
 import com.expensetracker.expense.Expense;
 
 import java.time.LocalDate;
+import java.math.BigDecimal;
 
 public record ExpenseResponse(
         Long id,
         String title,
-        double amount,
+        BigDecimal amount,
         String category,
         LocalDate date
 ) {

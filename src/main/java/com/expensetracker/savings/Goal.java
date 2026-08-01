@@ -1,10 +1,9 @@
 package com.expensetracker.savings;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 
-/**
- * Wishlist goal. Replaces the "GOAL|product|price|link" line from the savings file.
- */
 @Entity
 @Table(name = "goals")
 public class Goal {
@@ -19,16 +18,15 @@ public class Goal {
     @Column(nullable = false)
     private String productName;
 
-    @Column(nullable = false)
-    private double targetAmount;
+    @Column(nullable = false, precision = 19, scale = 2)
+    private BigDecimal targetAmount;
 
     private String productLink;
 
     protected Goal() {
-        // required by JPA
     }
 
-    public Goal(String username, String productName, double targetAmount, String productLink) {
+    public Goal(String username, String productName, BigDecimal targetAmount, String productLink) {
         this.username = username;
         this.productName = productName;
         this.targetAmount = targetAmount;
@@ -47,7 +45,7 @@ public class Goal {
         return productName;
     }
 
-    public double getTargetAmount() {
+    public BigDecimal getTargetAmount() {
         return targetAmount;
     }
 

@@ -1,6 +1,8 @@
 package com.expensetracker.config;
 
 import com.expensetracker.security.JwtAuthFilter;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -47,10 +49,13 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Value("${app.allowed-origin:http://localhost:8080}")
+    private String allowedOrigin;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedOrigins(List.of(allowedOrigin));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
