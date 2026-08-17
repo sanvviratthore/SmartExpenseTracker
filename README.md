@@ -165,14 +165,3 @@ Set these environment variables on the host before deploying:
 | `JWT_SECRET` | Yes | App refuses to start without it |
 | `APP_ALLOWED_ORIGIN` | Recommended | Your deployed URL, for CORS |
 | `H2_CONSOLE_ENABLED` | No | Leave unset — defaults to `false` |
-
-## Notes & next steps
-
-- Passwords now use BCrypt, so old `users.txt` credentials do not carry over —
-  users re-register once.
-- To swap H2 for PostgreSQL, change the `spring.datasource.*` properties and add
-  the Postgres driver; no code changes needed.
-- Suggested follow-ups: PUT/DELETE endpoints for expenses/savings/goals (currently
-  add-and-list only, not full CRUD), a minimum length check on registration
-  passwords, pagination on expense listing, a `POST /api/auth/refresh` endpoint,
-  and integration tests with `spring-security-test`.
